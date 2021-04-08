@@ -1,0 +1,49 @@
+---
+title: "Homework 9"
+author: "Riyo Moore"
+date: "4/4/2021"
+output: word_document
+---
+
+```{r include=FALSE}
+library(tidycensus)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(data.table)
+```
+
+Problem 1
+```{r}
+census_api_key("f8c513ad8bc6fde0858ff1ba4aa9c2956333a345", install = TRUE, overwrite = TRUE)
+```
+
+Problem 2
+```{r}
+Medinc2015<-get_acs(geography = "county", 
+        variables = c(medincome = "B01001A_011"), 
+        state = "CA", 
+        year = 2015)
+Medinc2015
+```
+
+```{r}
+descestimate<-Medinc2015 %>% filter(estimate >= 30000) %>% arrange(desc(estimate))
+descestimate
+```
+
+```{r}
+descestimate %>% filter(estimate==51644, moe==667)
+```
+
+```{r}
+ggplot(descestimate, aes(x=estimate)) + geom_boxplot(fill = "red")
+```
+
+```{r}
+descestimate<-Medinc2015 %>% filter(estimate >= 30000) %>% arrange(desc(estimate)) %>% mutate(NAME = fct_reorder(NAME, estimate))
+
+ggplot(descestimate, aes(x=estimate, y= NAME)) +geom_point(col="blue")
+
+```
+
